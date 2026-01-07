@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NETRAL BANG | SYSTEM OVERRIDE</title>
+    <style>
+        /* =========================================
+           1. CORE SYSTEM & VARIABLES
+           ========================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg-core: #050505;
+            --bg-card: #0e0e10;
+            --neon-blue: #00f3ff;
+            --neon-red: #ff003c;
+            --neon-green: #00ff6a;
+            --neon-yellow: #ffea00;
+            --text-main: #e0faff;
+            --border: #1f2229;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-core);
+            color: var(--text-main);
+            font-family: 'Share Tech Mono', monospace;
+            overflow-x: hidden;
+            padding-bottom: 40px;
+        }
+
+        body::after {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px; opacity: 0.15; z-index: -1; pointer-events: none;
+        }
+
+        /* =========================================
+           2. HEADER
+           ========================================= */
+        header {
+            text-align: center; padding: 60px 20px;
+            background: radial-gradient(circle at center, rgba(0, 243, 255, 0.15) 0%, transparent 80%);
+        }
+        h1 {
+            font-family: 'Chakra Petch', sans-serif; font-size: 3.5rem; text-transform: uppercase;
+            letter-spacing: 5px; color: white; margin-bottom: 15px;
+            text-shadow: 0 0 20px var(--neon-blue);
+            line-height: 1.1;
+        }
+        .status-badge { 
+            display: inline-block; padding: 5px 20px; border: 1px solid var(--neon-blue); 
+            color: var(--neon-blue); background: rgba(0, 243, 255, 0.05); font-size: 0.9rem; letter-spacing: 2px;
+        }
+
+        /* =========================================
+           3. MEMBER CARDS STYLE (GRID FIX)
+           ========================================= */
+        .container {
+            max-width: 1300px; margin: 0 auto; padding: 30px 20px;
+            display: grid; 
+            /* Grid responsif: menyesuaikan jumlah kolom berdasarkan lebar layar */
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+            gap: 25px;
+        }
+        .card { 
+            background: var(--bg-card); border: 1px solid var(--border); transition: 0.3s; cursor: pointer; 
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+            border-radius: 4px; /* Sedikit rounded agar lebih halus */
+        }
+        .card:hover { 
+            transform: translateY(-7px); border-color: var(--neon-blue); 
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.15); 
+            z-index: 2;
+        }
+        .card-img { height: 250px; overflow: hidden; position: relative; border-bottom: 1px solid var(--border); }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 0.5s; }
+        .card:hover .card-img img { filter: grayscale(0%); transform: scale(1.05); }
+        
+        .card-role-badge {
+            position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8);
+            color: var(--neon-yellow); padding: 3px 8px; font-size: 0.7rem; border: 1px solid var(--neon-yellow);
+            font-family: 'Chakra Petch'; text-transform: uppercase;
+        }
+
+        .card-body { padding: 15px; position: relative; }
+        .card-name { font-family: 'Chakra Petch'; font-size: 1.3rem; color: white; margin-bottom: 5px; font-weight: bold; }
+        
+        .mini-stat { display: flex; justify-content: space-between; font-size: 0.8rem; color: #888; margin-top: 10px; }
+        .mini-stat span { color: var(--neon-blue); }
+        .mini-bar { width: 100%; height: 3px; background: #333; margin-top: 5px; }
+        
+        @keyframes barFill { from { width: 0%; opacity: 0; } to { opacity: 1; } }
+        .mini-bar-fill { 
+            height: 100%; background: var(--neon-blue);
+            animation: barFill 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* =========================================
+           4. GLOBAL DIVIDERS
+           ========================================= */
+        .section-divider { text-align: center; margin: 80px 0 40px 0; position: relative; padding: 0 10px; }
+        .section-divider::before {
+            content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #333; z-index: -1;
+        }
+        .section-divider span {
+            background: var(--bg-core); padding: 0 20px; color: var(--neon-yellow); 
+            font-family: 'Chakra Petch'; letter-spacing: 3px; font-size: 1.5rem; border: 1px solid #333;
+            text-shadow: 0 0 10px rgba(255, 234, 0, 0.3); display: inline-block;
+        }
+
+        /* =========================================
+           5. GAME ZONE (LAYOUT FIX)
+           ========================================= */
+        .games-wrapper { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1fr; gap: 40px; }
+        .game-terminal { background: #080808; border: 2px solid #333; padding: 20px; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        .game-header { font-family: 'Chakra Petch'; color: white; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .start-btn { background: #222; color: white; border: 1px solid white; padding: 12px 20px; cursor: pointer; font-family: 'Share Tech Mono'; transition: 0.2s; width: 100%; margin-top: 15px; font-size: 1rem; }
+        .start-btn:hover { background: white; color: black; }
+        
+        .game-area-1 { height: 60px; background: #111; border: 1px solid #444; position: relative; margin: 20px 0; overflow: hidden; }
+        .target-zone { position: absolute; width: 60px; height: 100%; background: rgba(0, 243, 255, 0.2); border: 1px solid var(--neon-blue); left: 50%; transform: translateX(-50%); }
+        .game-cursor { position: absolute; width: 5px; height: 100%; background: var(--neon-red); left: 0; box-shadow: 0 0 10px var(--neon-red); }
+        
+        .mini-games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 10px; }
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+        .memory-card { background: #1a1a1a; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: transparent; border: 1px solid #333; cursor: pointer; transition: 0.2s; }
+        .memory-card.revealed { background: rgba(0, 243, 255, 0.1); color: var(--neon-blue); border-color: var(--neon-blue); }
+        .memory-card.matched { background: rgba(0, 255, 106, 0.1); color: var(--neon-green); border-color: var(--neon-green); }
+        
+        .firewall-container { margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .hack-bar-container { width: 100%; height: 30px; background: #222; border: 1px solid #555; position: relative; margin-bottom: 20px; }
+        .hack-bar { height: 100%; width: 50%; background: linear-gradient(90deg, var(--neon-red), var(--neon-yellow)); transition: width 0.1s linear; }
+        .smash-btn { width: 90px; height: 90px; border-radius: 50%; background: #111; border: 4px solid var(--neon-red); color: var(--neon-red); font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px rgba(255, 0, 60, 0.3); transition: 0.1s; display: flex; align-items: center; justify-content: center; }
+        .smash-btn:active { transform: scale(0.9); background: var(--neon-red); color: black; }
+
+        /* =========================================
+           6. MEMORY ARCHIVES
+           ========================================= */
+        .memory-grid-container { max-width: 1300px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .moment-card { height: 250px; position: relative; overflow: hidden; border: 1px solid #333; cursor: pointer; transition: all 0.3s ease; }
+        .moment-card:hover { border-color: white; transform: scale(1.02); z-index: 5; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        .moment-card img, .moment-card video { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: brightness(0.7) grayscale(50%); }
+        .moment-card:hover img, .moment-card:hover video { filter: brightness(1) grayscale(0%); transform: scale(1.1); }
+        .moment-caption { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: linear-gradient(to top, black, transparent); color: white; font-family: 'Chakra Petch'; text-transform: uppercase; letter-spacing: 1px; transform: translateY(100%); transition: 0.3s; border-top: 1px solid var(--neon-blue); }
+        .moment-card:hover .moment-caption { transform: translateY(0); }
+        .video-badge { position: absolute; top: 10px; right: 10px; background: var(--neon-red); color: black; padding: 2px 8px; font-weight: bold; font-size: 0.7rem; border-radius: 2px; z-index: 10; font-family: 'Chakra Petch'; }
+
+        /* =========================================
+           7. ENCRYPTED COMM-LINK
+           ========================================= */
+        .comm-wrapper { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        .terminal-window { background: rgba(10, 15, 10, 0.95); border: 1px solid var(--neon-green); box-shadow: 0 0 30px rgba(0, 255, 106, 0.15); border-radius: 5px; overflow: hidden; }
+        .terminal-header { background: #1a1a1a; padding: 10px 15px; display: flex; align-items: center; border-bottom: 1px solid #333; }
+        .term-lights span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+        .chat-feed { height: 350px; overflow-y: auto; padding: 20px; background-image: linear-gradient(rgba(0, 20, 0, 0.5) 1px, transparent 1px); background-size: 100% 30px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        .msg-line { display: flex; flex-direction: column; animation: fadeIn 0.3s ease; border-left: 2px solid #333; padding-left: 10px; }
+        .msg-meta { font-size: 0.75rem; color: #666; margin-bottom: 2px; }
+        .msg-user { color: var(--neon-green); font-weight: bold; margin-right: 10px; }
+        .msg-time { color: #444; }
+        .msg-text { color: #ddd; font-size: 0.95rem; line-height: 1.4; word-wrap: break-word; }
+        .msg-text::before { content: ">> "; color: #555; }
+        .msg-line.system { border-left-color: var(--neon-red); }
+        .msg-line.system .msg-user { color: var(--neon-red); }
+        
+        .input-zone { padding: 20px; background: #080808; border-top: 1px solid var(--neon-green); }
+        .input-line { display: flex; align-items: center; margin-bottom: 10px; background: #111; border: 1px solid #333; padding: 10px; }
+        .prompt { color: var(--neon-green); margin-right: 10px; font-size: 0.8rem; white-space: nowrap; }
+        .input-zone input { background: transparent; border: none; color: white; width: 100%; font-family: 'Share Tech Mono'; outline: none; font-size: 1rem; }
+        #username-input { color: var(--neon-yellow); font-weight: bold; text-transform: uppercase; }
+        .send-btn { width: 100%; background: var(--neon-green); color: black; border: none; padding: 15px; font-family: 'Chakra Petch'; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+        .send-btn:hover { background: white; box-shadow: 0 0 15px var(--neon-green); }
+
+        /* =========================================
+           8. MODAL & FOOTER
+           ========================================= */
+        footer { text-align: center; margin-top: 80px; color: #555; font-size: 0.8rem; padding: 20px; border-top: 1px dashed #333; }
+        
+        .modal-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px);
+            padding: 20px; 
+        }
+        .modal-content { 
+            background: #0a0a0a; border: 1px solid var(--neon-blue); max-width: 900px; width: 100%; 
+            display: grid; grid-template-columns: 1fr 1.2fr; 
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.1); overflow: hidden; 
+            animation: modalPop 0.3s ease-out; 
+            position: relative;
+        }
+        .modal-img-col { background: black; display: flex; align-items: center; justify-content: center; border-right: 1px solid #333; position: relative; max-height: 500px; }
+        .modal-img-col img, .modal-img-col video { width: 100%; height: 100%; object-fit: cover; }
+        
+        .modal-info-col { padding: 30px; display: flex; flex-direction: column; justify-content: center; }
+        .modal-role { color: var(--neon-yellow); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 5px; }
+        .modal-name { font-family: 'Chakra Petch'; font-size: 2.5rem; color: white; margin-bottom: 20px; text-transform: uppercase; line-height: 1; }
+        .stat-row { margin-bottom: 15px; }
+        .stat-label { display: flex; justify-content: space-between; font-size: 0.9rem; color: #aaa; margin-bottom: 5px; }
+        .stat-val { color: var(--neon-blue); font-weight: bold; }
+        .stat-track { width: 100%; height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
+        .stat-fill { height: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-green)); width: 0%; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); }
+        
+        .close-btn { position: absolute; top: 10px; right: 15px; color: white; font-size: 2.5rem; cursor: pointer; z-index: 20; font-weight: bold; line-height: 0.5; transition: 0.2s; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 5px; }
+        .close-btn:hover { color: var(--neon-red); }
+
+        @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* =========================================
+           9. RESPONSIVE / MOBILE LAYOUT (FIXED)
+           ========================================= */
+        @media (max-width: 900px) {
+            .modal-content {
+                grid-template-columns: 1fr;
+                /* Agar bisa di scroll di HP jika konten panjang */
+                max-height: 90vh;
+                overflow-y: auto;
+                border-radius: 8px;
+            }
+            /* PERBAIKAN 1: Foto tidak terpotong di HP */
+            .modal-img-col { 
+                height: auto; 
+                min-height: 250px; 
+                border-right: none; 
+                border-bottom: 1px solid #333; 
+                background: #000;
+            }
+            .modal-img-col img, .modal-img-col video {
+                max-height: 50vh; /* Batasi tinggi agar tidak memenuhi layar */
+                object-fit: contain; /* Gambar akan menyesuaikan (fit) dalam kotak tanpa terpotong */
+            }
+        }
+
+        @media (max-width: 768px) { 
+            header { padding: 40px 15px; }
+            h1 { font-size: 2.2rem; }
+            .section-divider span { font-size: 1.1rem; padding: 0 10px; }
+            
+            /* Game jadi 1 kolom di HP */
+            .mini-games-grid { grid-template-columns: 1fr; } 
+            
+            /* Input Chat jadi Stack vertikal agar mudah diketik */
+            .input-line { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .prompt { font-size: 0.7rem; color: #666; }
+            .input-zone input { font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 5px; }
+            
+            /* Modal penyesuaian */
+            .modal-name { font-size: 2rem; }
+            .modal-info-col { padding: 20px; }
+            
+            /* PERBAIKAN 2: TANGGAL MEMORY ARCHIVES SELALU MUNCUL DI HP */
+            /* Karena di HP tidak ada kursor mouse (hover), kita paksa caption muncul */
+            .moment-caption {
+                transform: translateY(0); 
+                background: rgba(0,0,0,0.8); /* Sedikit lebih gelap agar tulisan jelas */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>NETRAL BANG</h1>
+        <div class="status-badge">SQUAD DATABASE // VERSION 4.3</div>
+    </header>
+
+    <div class="container">
+        
+        <div class="card trigger-member" data-name="ABROAR" data-role="PENJUDI HUNTER" data-stats='{"Kesetiaan": 40, "PEMABOK": 60, "PENJUDI": 80, "Toxic": 100}'>
+            <div class="card-img"><img src="database1.jpeg"><div class="card-role-badge">PENCARI SLOT</div></div>
+            <div class="card-body"><div class="card-name">ABROAR</div><div class="mini-stat">OVERALL RATING <span>70%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:70%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="ADRIAN" data-role="FAKBOI PENSIUN" data-stats='{"Kontribusi": 50, "Toxic": 100, "Omongan Manis": 70, "Kesetiaan": 100}'>
+            <div class="card-img"><img src="database2.jpeg"><div class="card-role-badge">FAKBOI</div></div>
+            <div class="card-body"><div class="card-name">ADRIAN</div><div class="mini-stat">OVERALL RATING <span>80%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:80%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="DZAKI" data-role="1000 JULUKAN" data-stats='{"Kesetiaan": 100, "Wacana Doang": 50, "Toxic": 75, "Chat Dibalas": 34}'>
+            <div class="card-img"><img src="database3.jpeg"><div class="card-role-badge">1000 julukan</div></div>
+            <div class="card-body"><div class="card-name">DZAKI</div><div class="mini-stat">OVERALL RATING <span>64%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:64%"></div></div></div>
+        </div>
+
+         <div class="card trigger-member" data-name="DALLE" data-role="Pencari janda" data-stats='{"Toxic": 90, "Kesetiaan": 78, "Kewarasan": 50, "Stamina": 100}'>
+            <div class="card-img"><img src="database4.jpeg"><div class="card-role-badge">Pencari</div></div>
+            <div class="card-body"><div class="card-name">DALLE</div><div class="mini-stat">OVERALL RATING <span>79%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:79%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="RIO" data-role="KETUA PAGUYUBAN JOMBLO" data-stats='{"Logika": 84, "Tanggung Jawab": 100, "Toxic": 71, "Kesetiaan": 97}'>
+            <div class="card-img"><img src="database5.jpeg"><div class="card-role-badge">KETUA</div></div>
+            <div class="card-body"><div class="card-name">RIO</div><div class="mini-stat">OVERALL RATING <span>88%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:88%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="FADIL" data-role="SPESIES PUNAH" data-stats='{"Kesetiaan": 100, "Ingatan Utang": 5, "Chat Dibalas": 5, "Toxic": 99}'>
+            <div class="card-img"><img src="database6.jpeg"><div class="card-role-badge">SPESIES</div></div>
+            <div class="card-body"><div class="card-name">FADIL</div><div class="mini-stat">OVERALL RATING <span>52%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:52%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="GILBERT" data-role="CEO OF REBAHAN" data-stats='{"SUMBER MASALAH": 100, "TINGKAT MAGER": 100, "Toxic": 100, "Kesetiaan": 70}'>
+            <div class="card-img"><img src="database7.jpeg"><div class="card-role-badge">CEO</div></div>
+            <div class="card-body"><div class="card-name">GILBERT</div><div class="mini-stat">OVERALL RATING <span>92%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:92%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="SEPTA" data-role="DUTA FUTSAL" data-stats='{"Omongan Manis": 90, "Kewarasan": 73, "Kesetiaan": 70, "Toxic": 100}'>
+            <div class="card-img"><img src="database8.jpeg"><div class="card-role-badge">DUTA</div></div>
+            <div class="card-body"><div class="card-name">SEPTA</div><div class="mini-stat">OVERALL RATING <span>83%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:83%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="DHIKA" data-role="PAKAR CINTA (TEORI DOANG)" data-stats='{"Kesetiaan": 100, "Kewarasan": 50, "Logika": 60, "Toxic": 100}'>
+            <div class="card-img"><img src="database9.jpeg"><div class="card-role-badge">PAKAR CINTA</div></div>
+            <div class="card-body"><div class="card-name">DHIKA</div><div class="mini-stat">OVERALL RATING <span>77%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:77%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="FAQIH" data-role="Taljer leader" data-stats='{"Kesetiaan": 60, "Nongki": 75, "Toxic": 100, "Gengster": 100}'>
+            <div class="card-img"><img src="database10.jpeg"><div class="card-role-badge">Pentolan Taljer</div></div>
+            <div class="card-body"><div class="card-name">FAQIH</div><div class="mini-stat">OVERALL RATING <span>83%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:83%"></div></div></div>
+        </div>
+
+        <div class="card trigger-member" data-name="PUTRA" data-role="SILUMAN BUAYA" data-stats='{"Bacot": 100, "Toxic": 75, "Pembuly": 100, "Kesetiaan": 85}'>
+            <div class="card-img"><img src="database11.jpeg"><div class="card-role-badge">SILUMAN</div></div>
+            <div class="card-body"><div class="card-name">PUTRA</div><div class="mini-stat">OVERALL RATING <span>90%</span></div><div class="mini-bar"><div class="mini-bar-fill" style="width:90%"></div></div></div>
+        </div>
+
+    </div>
+
+    <div class="section-divider"><span>// SYSTEM OVERRIDE PROTOCOLS //</span></div>
+    <div class="games-wrapper">
+        <div class="game-terminal" style="border-color: var(--neon-blue);">
+            <div class="game-header">01. SECURITY BYPASS <span id="g1-status">LOCKED</span></div>
+            <div class="game-area-1"><div id="g1-target" class="target-zone"></div><div id="g1-cursor" class="game-cursor"></div></div>
+            <button class="start-btn" id="g1-btn">LOCK BIT (SPASI)</button>
+        </div>
+        <div class="mini-games-grid">
+            <div class="game-terminal" style="border-color: var(--neon-green);">
+                <div class="game-header">02. NEURAL DECRYPT <span id="g2-status">OFFLINE</span></div>
+                <div id="g2-grid" class="memory-grid"></div>
+                <button class="start-btn" id="g2-btn">START DECRYPTION</button>
+            </div>
+            <div class="game-terminal" style="border-color: var(--neon-red);">
+                <div class="game-header">03. FIREWALL BREACH <span id="g3-status">STANDBY</span></div>
+                <div class="firewall-container"><div class="hack-bar-container"><div id="g3-bar" class="hack-bar"></div></div><button id="g3-smash" class="smash-btn">TAP!</button></div>
+                <div id="g3-timer" style="margin-top: 15px; color: var(--neon-yellow); font-weight: bold;">0% UPLOADED</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"><span style="color: var(--neon-blue); border-color: var(--neon-blue);">// MEMORY ARCHIVES //</span></div>
+    <div class="memory-grid-container">
+        
+        <div class="moment-card trigger-photo" data-name="KONDANGAN DALLE">
+            <img src="memo1.jpeg">
+            <div class="moment-caption">4 Januari 2026</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="FUTSAL">
+            <img src="memo2.jpeg">
+            <div class="moment-caption">7 Agustus 2025</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="FUTSAL">
+            <img src="memo3.jpeg">
+            <div class="moment-caption">30 Juli 2025</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="BAKAR-BAKAR DIRUMAH SEPTA">
+            <img src="memo4.jpeg">
+            <div class="moment-caption">14 Juni 2025</div>
+        </div>
+
+        <div class="moment-card trigger-photo" data-name="FUTSAL">
+            <img src="memo5.jpeg">
+            <div class="moment-caption">10 Mei 2025</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="FUTSAL">
+            <img src="memo6.jpeg">
+            <div class="moment-caption">3 Mei 2025</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="TAKI">
+            <img src="memo7.jpeg">
+            <div class="moment-caption">27 Januari 2025</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="KONDANGAN AGIL">
+            <img src="memo8.jpeg">
+            <div class="moment-caption">10 November 2024</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="BUKBER IPS 1">
+            <img src="memo9.jpeg">
+            <div class="moment-caption">2 Apri 2024</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="JALAN-JALAN PULAU KEMARO">
+            <img src="memo10.jpeg">
+            <div class="moment-caption">8 Maret 2024</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="FLASHMOB">
+            <img src="memo11.jpeg">
+            <div class="moment-caption">30 Febuari 2024</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="UAS PRAKTIK NIKAH">
+            <img src="memo12.jpeg">
+            <div class="moment-caption">28 Febuari 2024</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="UAS PRAKTIK KIMIA">
+            <img src="memo13.jpeg">
+            <div class="moment-caption">26 Febuari 2024</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="YASINAN">
+            <img src="memo14.jpeg">
+            <div class="moment-caption">7 Febuari 2024</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="BERENANG OPI-MALL">
+            <img src="memo15.jpeg">
+            <div class="moment-caption">4 November 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="PELAJARAN OLAHRAGA">
+            <img src="memo16.jpeg">
+            <div class="moment-caption">25 Oktober 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="HARI BATIK NASIONAL">
+            <img src="memo17.jpeg">
+            <div class="moment-caption">2 Oktober 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="DANAU JAKABARING">
+            <img src="memo18.jpeg">
+            <div class="moment-caption">20 Agustus 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="TOURING PALEM">
+            <img src="memo19.jpeg">
+            <div class="moment-caption">17 Agustus 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="BERENANG OPI-MALL">
+            <img src="memo20.jpeg">
+            <div class="moment-caption">11 Agustus 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="BERENANG TANAH-MAS">
+            <img src="memo21.jpeg">
+            <div class="moment-caption">5 Agustus 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="BUKIT SIGUNTANG">
+            <img src="memo22.jpeg">
+            <div class="moment-caption">17 Febuari 2023</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="JAMKOS">
+            <img src="memo23.jpeg">
+            <div class="moment-caption">26 Oktober 2022</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="AHAHAHA">
+            <img src="memo24.jpeg">
+            <div class="moment-caption">15 Oktober 2022</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="APA COBA😹">
+            <img src="memo25.jpeg">
+            <div class="moment-caption">7 Oktober 2022</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="RUMAH PUTRA">
+            <img src="memo26.jpeg">
+            <div class="moment-caption">1 Oktober 2022</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="ANOMALI CUK😹">
+            <img src="memo27.jpeg">
+            <div class="moment-caption">1 Oktober 2022</div>
+        </div>
+        <div class="moment-card trigger-photo" data-name="😹😹😹">
+            <img src="memo28.jpeg">
+            <div class="moment-caption">2 September 2022</div>
+        </div>
+
+        <div class="moment-card trigger-video" data-name="😹😹😹" data-video="memo-video.mp4">
+            <div class="video-badge">VIDEO FILE</div>
+            <video src="memo-video.mp4" muted loop></video>
+            <div class="moment-caption">2 September 2022</div>
+        </div>
+
+    </div>
+
+    <div class="section-divider"><span style="color: var(--neon-green); border-color: var(--neon-green);">// ENCRYPTED COMM-LINK //</span></div>
+    <div class="comm-wrapper">
+        <div class="terminal-window">
+            <div class="terminal-header"><div class="term-lights"><span style="background:#ff5f56"></span><span style="background:#ffbd2e"></span><span style="background:#27c93f"></span></div><div class="term-title">NETRAL_BANG_CHAT.EXE</div></div>
+            <div id="chat-feed" class="chat-feed"></div>
+            <div class="input-zone">
+                <div class="input-line"><span class="prompt">USER@NETRAL:~#</span><input type="text" id="username-input" placeholder="CODENAME" maxlength="15"></div>
+                <div class="input-line"><span class="prompt">MSG_INPUT:~#</span><input type="text" id="message-input" placeholder="Type message..." autocomplete="off"></div>
+                <button id="send-btn" class="send-btn">TRANSMIT DATA [ENTER]</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>NETRAL BANG SECURE SERVER // EST 2024</p>
+    </footer>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-img-col">
+                <img id="m-img" src="">
+                <video id="m-video" controls style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+            </div>
+            <div class="modal-info-col"><div id="m-role" class="modal-role"></div><h2 id="m-name" class="modal-name"></h2><div id="m-stats-container" style="margin-top: 20px;"></div></div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 0. AUDIO SYSTEM
+        // ==========================================
+        const memberSfx = new Audio('Character Select slide.mp3');
+        const memorySfx = new Audio('Memory Achivment.mp3');
+        const transmitSfx = new Audio('Transmit Data.mp3');
+        const lockbitSfx = new Audio('Lockbit Retry.mp3');
+        const failedSfx = new Audio('Failed.mp3');
+        const startDecryptSfx = new Audio('Start Decryption.mp3');
+        const searchingSfx = new Audio('Searching.mp3');
+        const tapSfx = new Audio('Tap.mp3');
+        const breachSfx = new Audio('Sound Bar.mp3');
+        breachSfx.loop = true;
+        const failTrompetSfx = new Audio('Failed trompet.mp3');
+
+        function playSfx(audioObj) {
+            audioObj.currentTime = 0; 
+            audioObj.play().catch(e => {});
+        }
+
+        // ==========================================
+        // 1. MODAL LOGIC (UPDATED FOR VIDEO)
+        // ==========================================
+        const modal = document.getElementById('modal');
+        const mImg = document.getElementById('m-img');
+        const mVideo = document.getElementById('m-video'); 
+        const mName = document.getElementById('m-name');
+        const mRole = document.getElementById('m-role');
+        const mStats = document.getElementById('m-stats-container');
+        
+        function closeModal() { 
+            playSfx(memberSfx); 
+            mVideo.pause();
+            mVideo.src = ""; 
+            modal.style.display = 'none'; 
+        }
+        modal.addEventListener('click', (e) => { 
+            if (e.target === modal) closeModal(); 
+        });
+
+        // Logic Member Card
+        document.querySelectorAll('.trigger-member').forEach(card => {
+            card.addEventListener('mouseenter', () => playSfx(memberSfx));
+            card.addEventListener('click', function() {
+                playSfx(memberSfx); 
+                const name = this.getAttribute('data-name'), role = this.getAttribute('data-role'), imgSrc = this.querySelector('img').src, statsData = JSON.parse(this.getAttribute('data-stats'));
+                
+                mImg.style.display = 'block'; mVideo.style.display = 'none';
+                mImg.src = imgSrc; 
+                
+                mName.innerText = name; mRole.innerText = "// " + role; mRole.style.display = 'block'; mStats.innerHTML = '';
+                for (const [key, value] of Object.entries(statsData)) {
+                    mStats.innerHTML += `<div class="stat-row"><div class="stat-label"><span>${key}</span><span class="stat-val">${value}%</span></div><div class="stat-track"><div class="stat-fill" style="width: 0%"></div></div></div>`;
+                }
+                modal.style.display = 'flex';
+                setTimeout(() => { const bars = mStats.querySelectorAll('.stat-fill'); const values = Object.values(statsData); bars.forEach((bar, index) => { bar.style.width = values[index] + "%"; }); }, 100);
+            });
+        });
+
+        // Logic Photo Memory
+        document.querySelectorAll('.trigger-photo').forEach(photo => {
+            photo.addEventListener('mouseenter', () => playSfx(memorySfx));
+            photo.addEventListener('click', function() {
+                playSfx(memorySfx);
+                mImg.style.display = 'block'; mVideo.style.display = 'none';
+                mImg.src = this.querySelector('img').src; 
+                mName.innerText = this.getAttribute('data-name'); mRole.style.display = 'none'; mStats.innerHTML = ''; modal.style.display = 'flex';
+            });
+        });
+
+        // Logic Video Memory
+        document.querySelectorAll('.trigger-video').forEach(vid => {
+            vid.addEventListener('mouseenter', function() {
+                playSfx(memorySfx);
+                this.querySelector('video').play().catch(()=>{});
+            });
+            vid.addEventListener('mouseleave', function() {
+                this.querySelector('video').pause();
+            });
+            vid.addEventListener('click', function() {
+                playSfx(memorySfx);
+                const videoSrc = this.getAttribute('data-video');
+                const videoName = this.getAttribute('data-name');
+                mImg.style.display = 'none'; mVideo.style.display = 'block';
+                mVideo.src = videoSrc; mVideo.play();
+                mName.innerText = videoName; mRole.style.display = 'none'; mStats.innerHTML = ''; modal.style.display = 'flex';
+            });
+        });
+
+        // ==========================================
+        // 2. GAME LOGIC
+        // ==========================================
+        const g1Cursor = document.getElementById('g1-cursor'), g1Target = document.getElementById('g1-target'), g1Btn = document.getElementById('g1-btn'), g1Status = document.getElementById('g1-status');
+        let g1Running = false, g1Pos = 0, g1Dir = 1, g1Speed = 2, g1Level = 1;
+        function g1Loop() { if(!g1Running) return; g1Pos += g1Speed * g1Dir; if(g1Pos > 100 || g1Pos < 0) g1Dir *= -1; g1Cursor.style.left = g1Pos + '%'; requestAnimationFrame(g1Loop); }
+        
+        g1Btn.addEventListener('click', () => { 
+            playSfx(lockbitSfx);
+            if(!g1Running) { 
+                g1Running = true; g1Level = 1; g1Speed = 2; g1Btn.innerText = "LOCK BIT"; g1Status.innerText = "LEVEL 1"; g1Status.style.color = "white"; g1Loop(); 
+            } else { 
+                const cRect = g1Cursor.getBoundingClientRect(); const tRect = g1Target.getBoundingClientRect(); 
+                if(cRect.left >= tRect.left && cRect.right <= tRect.right) { 
+                    g1Level++; g1Speed += 1.5; g1Status.innerText = "LEVEL " + g1Level; g1Target.style.left = Math.floor(Math.random() * 80 + 10) + "%"; 
+                    if(g1Level > 3) { g1Running = false; g1Status.innerText = "UNLOCKED"; g1Status.style.color = "var(--neon-green)"; g1Btn.innerText = "ACCESS GRANTED"; } 
+                } else { 
+                    g1Running = false; g1Status.innerText = "FAILED"; g1Status.style.color = "var(--neon-red)"; g1Btn.innerText = "RETRY?"; 
+                    playSfx(failedSfx);
+                } 
+            } 
+        });
+        document.addEventListener('keydown', (e) => { if(e.code === 'Space' && g1Running) { e.preventDefault(); g1Btn.click(); } });
+
+        const symbols = ['{}', '{}', '//', '//', '$$', '$$', '<>', '<>', '[]', '[]', '&&', '&&', '!!', '!!'], g2Grid = document.getElementById('g2-grid'), g2Btn = document.getElementById('g2-btn');
+        let g2Flipped = [], g2Matches = 0;
+        
+        function initG2() { 
+            g2Grid.innerHTML = ''; g2Flipped = []; g2Matches = 0; 
+            const shuffled = [...symbols].sort(() => Math.random() - 0.5); 
+            shuffled.forEach(sym => { 
+                const card = document.createElement('div'); card.className = 'memory-card'; card.dataset.symbol = sym; card.innerText = '?'; 
+                card.addEventListener('click', function() { 
+                    playSfx(searchingSfx);
+                    if(g2Flipped.length < 2 && !this.classList.contains('revealed')) { 
+                        this.classList.add('revealed'); this.innerText = this.dataset.symbol; g2Flipped.push(this); 
+                        if(g2Flipped.length === 2) { 
+                            const [c1, c2] = g2Flipped; 
+                            if(c1.dataset.symbol === c2.dataset.symbol) { 
+                                c1.classList.add('matched'); c2.classList.add('matched'); g2Flipped = []; g2Matches++; 
+                                if(g2Matches === 7) { document.getElementById('g2-status').innerText = "DECRYPTED"; document.getElementById('g2-status').style.color = "var(--neon-green)"; } 
+                            } else { 
+                                setTimeout(() => { c1.classList.remove('revealed'); c1.innerText = '?'; c2.classList.remove('revealed'); c2.innerText = '?'; g2Flipped = []; }, 600); 
+                            } 
+                        } 
+                    } 
+                }); 
+                g2Grid.appendChild(card); 
+            }); 
+            document.getElementById('g2-status').innerText = "SEARCHING..."; 
+        }
+        
+        g2Btn.addEventListener('click', () => { playSfx(startDecryptSfx); initG2(); });
+
+        const g3Bar = document.getElementById('g3-bar'), g3Btn = document.getElementById('g3-smash'), g3TimerTxt = document.getElementById('g3-timer');
+        let g3Progress = 50, g3Active = false, g3Interval;
+
+        const g3Action = () => { 
+            playSfx(tapSfx);
+            if(!g3Active && g3Progress > 0 && g3Progress < 100) { 
+                g3Active = true; 
+                breachSfx.currentTime = 0; breachSfx.play().catch(e=>{});
+                document.getElementById('g3-status').innerText = "BREACHING..."; 
+                g3Interval = setInterval(() => { g3Progress -= 0.8; updateG3(); }, 50); 
+            } 
+            if(g3Active) { g3Progress += 4; updateG3(); } 
+        };
+        g3Btn.addEventListener('mousedown', g3Action); 
+        g3Btn.addEventListener('touchstart', (e) => { e.preventDefault(); g3Action(); });
+
+        function updateG3() { 
+            let volume = g3Progress / 100; if(volume < 0) volume = 0; if(volume > 1) volume = 1; breachSfx.volume = volume;
+            if(g3Progress >= 100) { 
+                g3Active = false; clearInterval(g3Interval); breachSfx.pause();
+                document.getElementById('g3-status').innerText = "SYSTEM HACKED"; document.getElementById('g3-status').style.color = "var(--neon-green)"; g3TimerTxt.innerText = "COMPLETE"; 
+            } else if (g3Progress <= 0) { 
+                g3Active = false; clearInterval(g3Interval); breachSfx.pause();
+                failTrompetSfx.volume = 1.0; playSfx(failTrompetSfx);
+                g3Progress = 50; document.getElementById('g3-status').innerText = "FAILED"; document.getElementById('g3-status').style.color = "var(--neon-red)"; 
+            } 
+            g3Bar.style.width = g3Progress + "%"; g3TimerTxt.innerText = Math.floor(g3Progress) + "% UPLOADED"; 
+        }
+
+        // ==========================================
+        // 3. CHAT LOGIC
+        // ==========================================
+        const chatFeed = document.getElementById('chat-feed'), nameInput = document.getElementById('username-input'), msgInput = document.getElementById('message-input'), sendBtn = document.getElementById('send-btn');
+        let chatData = JSON.parse(localStorage.getItem('netralChatData_v1')) || [{ name: 'SYSTEM', msg: 'CONNECTION ESTABLISHED...', time: '00:00:01', type: 'system' }];
+        function renderChat() { chatFeed.innerHTML = ''; chatData.forEach(d => createBubble(d.name, d.msg, d.time, d.type)); chatFeed.scrollTop = chatFeed.scrollHeight; }
+        function createBubble(name, msg, time, type) { const div = document.createElement('div'); div.className = `msg-line ${type}`; div.innerHTML = `<div class="msg-meta"><span class="msg-user">[${name}]</span><span class="msg-time">${time}</span></div><div class="msg-text">${msg}</div>`; chatFeed.appendChild(div); }
+        function sendMessage() { const name = nameInput.value.trim() || 'ANONYMOUS', msg = msgInput.value.trim(); if (msg === "") return; playSfx(transmitSfx); const originalTxt = sendBtn.innerText; sendBtn.innerText = "TRANSMITTING..."; sendBtn.style.background = "#fff"; setTimeout(() => { const now = new Date(); const timeStr = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0'); const newData = { name: name, msg: msg, time: timeStr, type: 'normal' }; chatData.push(newData); localStorage.setItem('netralChatData_v1', JSON.stringify(chatData)); createBubble(name, msg, timeStr, 'normal'); chatFeed.scrollTop = chatFeed.scrollHeight; msgInput.value = ''; sendBtn.innerText = originalTxt; sendBtn.style.background = "var(--neon-green)"; if(msg.toLowerCase().includes('admin')) { setTimeout(() => { const bot = { name: 'BOT_SYSTEM', msg: 'ADMIN SEDANG AFK.', time: timeStr, type: 'system' }; chatData.push(bot); localStorage.setItem('netralChatData_v1', JSON.stringify(chatData)); createBubble(bot.name, bot.msg, bot.time, bot.type); chatFeed.scrollTop = chatFeed.scrollHeight; }, 1000); } }, 500); }
+        sendBtn.addEventListener('click', sendMessage); msgInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        renderChat();
+    </script>
+</body>
+</html>
